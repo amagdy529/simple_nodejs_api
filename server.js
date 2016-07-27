@@ -4,6 +4,7 @@ var app 	   = express();
 
 
 var mongoose   = require('mongoose');
+
 mongoose.connect('mongodb://localhost/node_api_db1');
 
 var Bear = require('./app/models/bear');
@@ -63,27 +64,29 @@ router.route('/bears')
     });
 
 
-// router.route('/bears/:bear_id')
-//
-//     .get(function(req , res){
-//           Bear.findById(req.params.bear_id, function(err, bear) {
-//               if (err)
-//                   res.send(err);
-//               res.json(bear);
-//           });
-//     });
+router.route('/bears/:bear_id')
 
-    router.route('/bears/:bear_id')
+    .get(function(req , res){
+          Bear.findById(req.params.bear_id, function(err, bear) {
+              if (err)
+                  res.send(err);
+              res.json(bear);
+          });
+    })
 
-        // get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
-        .get(function(req, res) {
-            Bear.findById(req.params.bear_id, function(err, bear) {
-                if (err)
+    .put(function(req , res){
+          Bear.findById(req.params.bear_id , function(err , bear){
+              if(err)
+                res.send(err);
+              bear.name = req.body.name;
+
+              bear.save(function(err){
+                  if(err)
                     res.send(err);
-                res.json(bear);
-            });
-        });
-
+                  res.json({message:'the bear is fuckin updated !'});
+              });
+          });
+    });
 
 
 
